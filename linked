@@ -1,0 +1,149 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct lnode
+{
+    int data;
+    struct lnode *next; 
+};
+
+typedef struct lnode node;
+node *head = NULL;
+
+void insertAtBeginning(int val)
+{
+    node newNode = (node)malloc(sizeof(node));
+    if (!newNode)
+    {
+        printf("out of memory!\n");
+        return;
+    }
+    newNode->data = val;
+    newNode->next = head;
+    head = newNode;
+}
+
+void insertAtPos(int pos, int val)
+{
+    int i;
+    node newNode = (node)malloc(sizeof(node));
+    if (newNode == NULL)
+    {
+        printf("out of memory!\n");
+        return;
+    }
+    newNode->data = val;
+    node *temp = head;
+
+    for (i = 1; i < pos - 1; i++)
+    {
+        temp = temp->next;
+        if (temp == NULL)
+        {
+            printf("Invalid\n");
+            return;
+        }
+    }
+    newNode->next = temp->next;
+    temp->next = newNode;
+}
+
+void deleteAtPos(int pos)
+{
+    int i;
+    node *temp = head, *prev;
+    if (head == NULL)
+    {
+        printf("empty\n");
+        return;
+    }
+    if (pos == 0)
+    {
+        head = head->next;
+        free(temp);
+        return;
+    }
+    for (i = 1; i <= pos; i++)
+    {
+        prev = temp;
+        temp = temp->next;
+        if (temp == NULL)
+        {
+            printf("Invalid\n");
+            return;
+        }
+    }
+    prev->next = temp->next;
+    free(temp);
+}
+
+void traverse()
+{
+    if (head == NULL)
+    {
+        printf("List is empty\n");
+        return;
+    }
+    node *temp = head;
+    while (temp != NULL)
+    {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+int main()
+{
+    int choice, val, pos;
+    while (1)
+    {
+        printf("\nMenu\n");
+        printf("1. Insert at position\n");
+        printf("2. Delete at spec position\n");
+        printf("3. Traverse\n");
+        printf("4. Exit\n");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+            case 1:
+                printf("Enter the pos(0=beginning): ");
+                scanf("%d", &pos);
+                if (pos < 0)
+                {
+                    printf("Invalid\n");
+                    break;
+                }
+                printf("Enter data:\n");
+                scanf("%d", &val);
+                if (pos == 0)
+                    insertAtBeginning(val);
+                else
+                    insertAtPos(pos, val);
+                break;
+
+            case 2:
+                printf("Enter pos:\n");
+                scanf("%d", &pos);
+                if (pos < 0)
+                {
+                    printf("Invalid\n");
+                    break;
+                }
+                deleteAtPos(pos);
+                break;
+
+            case 3:
+                traverse();
+                break;
+
+            case 4:
+                exit(0);
+
+            default:
+                printf("Invalid\n");
+        }
+    }
+    return 0;
+}
